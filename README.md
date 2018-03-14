@@ -8,15 +8,15 @@ Make a GET request to /findPrice/between/$DateOne$/$DateTwo$
 
 ### Inputs
 
-|-----------|------------|------|
-| Inputs   |  Example   | Description| 
+|-----------|------------|------------|
+| Inputs   |  Example    | Description| 
 |-----------|------------|------|
 | DateOne (In url) | 2015-07-04T12:00:00Z | This is a date where the search starts | 
 | DateTwo (in url) | 2015-07-04T12:00:00Z | This is a newer date where the search ends | 
 
 ### Outputs 
 
-Normal outputs: 200 + 
+Normal outputs: HTTP200 for normal outputs and given the Content-Type: 
 
 **JSON**
 
@@ -26,7 +26,7 @@ The result represents the price:
 
 **XML**
    
-   <result>1500</result>
+   &lt;result>1500&lt;/result>
       
 ## How to execute this in Docker
 
@@ -36,8 +36,6 @@ The result represents the price:
 ### Items left todo
 
  * Create Core 
-   * Data type 
-   * Repository (Find)
    * Configuration
    * Config Case Class
    * Create test for the sample cases

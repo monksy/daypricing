@@ -1,4 +1,4 @@
-package com.mrmonksy
+package com.mrmonksy.daypricing
 
 /**
  * @author ${user.name}
