@@ -64,8 +64,4 @@ To build the docker container. Go to the base of the project directory. Issue th
      * Number of calls
      * Average Response time 
      * Update Tests
- * Create Docker container
- * Update Readme 
-   * Curl Commands used to invoke the service
-   * Docker command to run the container 
  * Review requirements to show that this is inline 
