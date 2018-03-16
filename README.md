@@ -31,7 +31,8 @@ The result represents the price:
 
  * HealthCheck- JSON- curl -v  'http://localhost:8080/healthcheck' -H 'Accept: application/json' 
  * HealthCheck- XML-  curl -v  'http://localhost:8080/healthcheck' -H 'Accept: application/xml'
- 
+ * FindPrices (unavailable) curl 'http://localhost:8080/findPrice/between/2015-07-04T07:00:00Z/2015-07-04T20:00:00Z' -H 'Accept: application/json'
+  (Change the Accept for XML)
  
 ## How to execute this in Docker
 
@@ -41,7 +42,7 @@ To build the docker container. Go to the base of the project directory. Issue th
     
     (Subsitute testbuild for the name of the docker image you're building]
     
-    To run: docker run -v application.json:/daypricing/application.json -p 8080:8080 testbuild
+    To run: docker run -v $(pwd)/application.json:/daypricing/application.json -p 8080:8080 testbuild
  
 
 
@@ -49,11 +50,3 @@ To build the docker container. Go to the base of the project directory. Issue th
 
 [Through the command line tools GCP supports docker deployments.] (https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app)
 
-
-### Items left todo
-
- * Interface
-   * Find price endpoint
-     * Define endpoint + test
-     * Reproduce all calls for the examples given
- * Review requirements to show that this is inline 
