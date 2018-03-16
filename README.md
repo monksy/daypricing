@@ -55,13 +55,5 @@ To build the docker container. Go to the base of the project directory. Issue th
  * Interface
    * Find price endpoint
      * Define endpoint + test
-     * Wrap price 
-     * Create Test 
-     * Create Test for Json
-     * Create Test for XML
      * Reproduce all calls for the examples given
-   * Update Health Check
-     * Number of calls
-     * Average Response time 
-     * Update Tests
  * Review requirements to show that this is inline 
