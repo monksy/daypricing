@@ -8,9 +8,8 @@ Make a GET request to /findPrice/between/$DateOne$/$DateTwo$
 
 ### Inputs
 
-|-----------|------------|------------|
 | Inputs   |  Example    | Description| 
-|-----------|------------|------|
+| ----------- |------------|------ |
 | DateOne (In url) | 2015-07-04T12:00:00Z | This is a date where the search starts | 
 | DateTwo (in url) | 2015-07-04T12:00:00Z | This is a newer date where the search ends | 
 
