@@ -32,13 +32,15 @@ The result represents the price:
 
 **LEFT TODO**
 
+## Guide on deploying in GCP 
+
+//TODO: GCP Deployment
+
 
 ### Items left todo
 
  * Create Core 
-   * Configuration
-   * Config Case Class
-   * Create test for the sample cases
+   * Create objects to convert the data objects from the config to the price data items
  * Interface
    * Health Endpoint 
      * Ok
