@@ -41,7 +41,7 @@ To build the docker container. Go to the base of the project directory. Issue th
     
     (Subsitute testbuild for the name of the docker image you're building]
     
-    To run: docker run -v application.json:/daypricing/app.json -p 8080:8080 testbuild
+    To run: docker run -v application.json:/daypricing/application.json -p 8080:8080 testbuild
  
 
 

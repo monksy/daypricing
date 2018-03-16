@@ -6,14 +6,8 @@ import akka.http.scaladsl.model.{HttpHeader, StatusCode, StatusCodes}
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.{BeforeAndAfter, FlatSpec, Matchers, WordSpec}
 
-class AppTest extends WordSpec with Matchers with ScalatestRouteTest with ServiceRoutes with BeforeAndAfter {
+class AppTest extends WordSpec with Matchers with ScalatestRouteTest with ServiceRoutes {
 
-  override def beforeAll(): Unit = {
-    val classLoader = getClass.getClassLoader
-    val file = new File(classLoader.getResource("application.json").getFile)
-
-    System.setProperty("config", file.getAbsolutePath)
-  }
   "Webservice::/healthcheck" should {
     "return the result for a health check in JSON (the default)" in {
       Get("/healthcheck") ~> route ~> check {

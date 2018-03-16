@@ -29,9 +29,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   * This is a quirk of akka-http. It has to be a trait to be able to isolate it's self from the server standup.
   */
 trait ServiceRoutes {
-  //ConfigFacotry defaults to application.json, however, I changed this because I had some issues when building the fat jar and it was overwritting the reference.conf.
-  // - Given time I would revert this change
-  lazy val fixedRates = RatesCollection(ConfigFactory.parseFile(new File(System.getProperty("config"))))
+  lazy val fixedRates = RatesCollection(ConfigFactory.defaultApplication())
   lazy val normalizedPrices = fixedRates.rates.flatMap(PriceDataUtility.from)
 
   lazy val dataManager = new PriceDataManager(normalizedPrices)
@@ -42,35 +40,33 @@ trait ServiceRoutes {
   var allTimeSpent = 0L
 
   val route =
-    path("findPrice/between") {
-      path(Segment / Segment) { case (fromDate, toDate) => {
-        (get & extract(_.request.headers)) { headers =>
+    //path("findPrice/between" / Segment / Segment) { case (fromDate, toDate) => {
+    path("/findPrice/between/2015-07-01T07:00:00Z/2015-07-01T12:00:00Z") {
+      (get & extract(_.request.headers)) { headers =>
+        complete {
+          numberOfCalls += 1
+          val startTime = System.currentTimeMillis()
 
+          val mediaNegotiator = new MediaTypeNegotiator(headers)
+          val fullFrom = ISODateTimeFormat.dateTime().parseDateTime("2015-07-01T07:00:00Z")
+          val fullEnd = ISODateTimeFormat.dateTime().parseDateTime("2015-07-01T12:00:00Z")
 
-          complete {
-            numberOfCalls += 1
-            val startTime = System.currentTimeMillis()
+          val result = dataManager.findPriceBetween(fullFrom, fullEnd)
+          val smallResponse = PriceResponse(result.map(_.price).getOrElse("unavailable").toString)
 
-            val mediaNegotiator = new MediaTypeNegotiator(headers)
-            val fullFrom = ISODateTimeFormat.dateTime().parseDateTime(fromDate)
-            val fullEnd = ISODateTimeFormat.dateTime().parseDateTime(toDate)
+          allTimeSpent += (System.currentTimeMillis() - startTime)
 
-            val result = dataManager.findPriceBetween(fullFrom, fullEnd)
-            val smallResponse = PriceResponse(result.map(_.price).getOrElse("unavailable").toString)
+          HttpResponse(entity = convertPriceResponse(smallResponse, mediaNegotiator))
 
-            allTimeSpent += (System.currentTimeMillis() - startTime)
-
-            HttpResponse(entity = convertPriceResponse(smallResponse, mediaNegotiator))
-          }
-        }
       }
-      }
+
+    }
     } ~
       path("healthcheck") {
         (get & extract(_.request.headers)) { headers =>
-          val mediaNegotiator = new MediaTypeNegotiator(headers)
-          val result = HealthResponse("ok", numberOfCalls, allTimeSpent / numberOfCalls)
           complete {
+            val mediaNegotiator = new MediaTypeNegotiator(headers)
+            val result = HealthResponse("ok", numberOfCalls, allTimeSpent / numberOfCalls)
             HttpResponse(entity = convertHealthResultToResponse(result, mediaNegotiator))
           }
         }
@@ -95,13 +91,15 @@ trait ServiceRoutes {
 
     } else {
       val pureXml =
-        <response><status>
-          {health.status}
-        </status> <totalCalls>
+        <response>
+          <status>
+            {health.status}
+          </status> <totalCalls>
           {health.totalCalls}
         </totalCalls> <avgResponseTime>
           {health.averageResponseTime}
-        </avgResponseTime></response>
+        </avgResponseTime>
+        </response>
 
       val p = new scala.xml.PrettyPrinter(80, 4)
       contentType = ContentTypes.`text/xml(UTF-8)`
