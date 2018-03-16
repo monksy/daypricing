@@ -1,23 +1,17 @@
 package com.mrmonksy.daypricing
 
 
-import java.io.File
-
 import akka.actor.ActorSystem
-import akka.actor.FSM.LogEntry
 import akka.event.Logging
-import akka.http.javadsl.server.RouteResult
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.MediaTypeNegotiator
-import akka.http.scaladsl.server.RouteResult.Rejected
-import akka.http.scaladsl.server.directives.DebuggingDirectives
 import akka.stream.ActorMaterializer
 import com.mrmonksy.daypricing.config.RatesCollection
 import com.mrmonksy.daypricing.datamodifiers.PriceDataUtility
 import com.typesafe.config.ConfigFactory
-import org.joda.time.format.ISODateTimeFormat
+import org.joda.time
 import spray.json.{DefaultJsonProtocol, _}
 
 object MyJsonProtocol extends DefaultJsonProtocol {
@@ -39,17 +33,17 @@ trait ServiceRoutes {
   var numberOfCalls = 1L
   var allTimeSpent = 0L
 
+
   val route =
-    //path("findPrice/between" / Segment / Segment) { case (fromDate, toDate) => {
-    path("/findPrice/between/2015-07-01T07:00:00Z/2015-07-01T12:00:00Z") {
+    path("findPrice" / "between" / Segment / Segment) { case (fromDate, toDate) => {
       (get & extract(_.request.headers)) { headers =>
         complete {
           numberOfCalls += 1
           val startTime = System.currentTimeMillis()
 
           val mediaNegotiator = new MediaTypeNegotiator(headers)
-          val fullFrom = ISODateTimeFormat.dateTime().parseDateTime("2015-07-01T07:00:00Z")
-          val fullEnd = ISODateTimeFormat.dateTime().parseDateTime("2015-07-01T12:00:00Z")
+          val fullFrom = time.DateTime.parse(fromDate)
+          val fullEnd = time.DateTime.parse(toDate)
 
           val result = dataManager.findPriceBetween(fullFrom, fullEnd)
           val smallResponse = PriceResponse(result.map(_.price).getOrElse("unavailable").toString)
@@ -57,9 +51,8 @@ trait ServiceRoutes {
           allTimeSpent += (System.currentTimeMillis() - startTime)
 
           HttpResponse(entity = convertPriceResponse(smallResponse, mediaNegotiator))
-
+        }
       }
-
     }
     } ~
       path("healthcheck") {

@@ -25,19 +25,19 @@ class AppTest extends WordSpec with Matchers with ScalatestRouteTest with Servic
     }
   }
 
-  /* "Webservice::/findPrice/" should {
+   "Webservice::/findPrice/" should {
     "Return a price for 2015-07-01T07:00:00Z to 2015-07-01T12:00:00Z in JSON" in {
       Get("/findPrice/between/2015-07-01T07:00:00Z/2015-07-01T12:00:00Z") ~> route ~> check {
 
         status should be(StatusCodes.OK)
-        responseAs[String] should be("""{"result": "1500"}"""")
+        responseAs[String] should be("""{"result":"1500"}""")
       }
     }
 
     "Return a price for 2015-07-01T07:00:00Z to 2015-07-01T12:00:00Z in XML" in {
       Get("/findPrice/between/2015-07-01T07:00:00Z/2015-07-01T12:00:00Z") ~> addHeader("Accept", "application/xml") ~> route ~> check {
         status should be(StatusCodes.OK)
-        responseAs[String] should be("<result> ok </result>")
+        responseAs[String] should be("<result> 1500 </result>")
       }
 
     }
@@ -45,18 +45,18 @@ class AppTest extends WordSpec with Matchers with ScalatestRouteTest with Servic
       Get("/findPrice/between/2015-07-04T07:00:00Z/2015-07-04T12:00:00Z") ~> route ~> check {
 
         status should be(StatusCodes.OK)
-        responseAs[String] should be("""{"result": "2000"}"""")
+        responseAs[String] should be("""{"result":"2000"}""")
       }
     }
     "Return a price for 2015-07-04T07:00:00Z to 2015-07-04T20:00:00Z in JSON" in {
       Get("/findPrice/between/2015-07-04T07:00:00Z/2015-07-04T20:00:00Z") ~> route ~> check {
 
         status should be(StatusCodes.OK)
-        responseAs[String] should be("""{"result": "unavailable"}"""")
+        responseAs[String] should be("""{"result":"unavailable"}""")
       }
     }
 
-  }*/
+  }
 
 
 }
