@@ -35,11 +35,19 @@ The result represents the price:
  
 ## How to execute this in Docker
 
-**LEFT TODO**
+To build the docker container. Go to the base of the project directory. Issue the following command:
+
+    docker build -t testbuild .
+    
+    (Subsitute testbuild for the name of the docker image you're building]
+    
+    To run: docker run -v application.json:/daypricing/app.json -p 8080:8080 testbuild
+ 
+
 
 ## Guide on deploying in GCP 
 
-//TODO: GCP Deployment
+[Through the command line tools GCP supports docker deployments.] (https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app)
 
 
 ### Items left todo
