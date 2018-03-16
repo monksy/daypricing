@@ -28,6 +28,12 @@ The result represents the price:
    
    &lt;result>1500&lt;/result>
       
+### Curl Commands
+
+ * HealthCheck- JSON- curl -v  'http://localhost:8080/healthcheck' -H 'Accept: application/json' 
+ * HealthCheck- XML-  curl -v  'http://localhost:8080/healthcheck' -H 'Accept: application/xml'
+ 
+ 
 ## How to execute this in Docker
 
 **LEFT TODO**
@@ -40,11 +46,6 @@ The result represents the price:
 ### Items left todo
 
  * Interface
-   * Health Endpoint 
-     * Ok
-     * Test
-     * XML Output + Test
-     * Json Output + Test
    * Find price endpoint
      * Define endpoint + test
      * Wrap price 
