@@ -3,6 +3,10 @@ package com.mrmonksy.daypricing.config
 import com.typesafe.config.Config
 import scala.collection.JavaConversions._
 
+/**
+  * This is to handle the incoming price configuration.
+  * @param rates
+  */
 case class RatesCollection(rates: List[RateItem])
 object RatesCollection {
   def apply(config: Config): RatesCollection = {
@@ -20,5 +24,3 @@ object RateItem {
   }
 }
 
-
-//TODO: Write a class to turn a rate item into a price data item

@@ -39,8 +39,6 @@ The result represents the price:
 
 ### Items left todo
 
- * Create Core 
-   * Create objects to convert the data objects from the config to the price data items
  * Interface
    * Health Endpoint 
      * Ok
