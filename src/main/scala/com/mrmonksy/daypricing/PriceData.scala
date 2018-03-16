@@ -3,7 +3,7 @@ package com.mrmonksy.daypricing
 
 import org.joda.time.{DateTime, Interval, LocalTime}
 
-class PriceDataManager(prices: List[PriceDataItem]) {
+class PriceDataManager(val prices: List[PriceDataItem]) {
   /**
     * This searches for the best interval within the parameters. Note: this is inclusive of the startTime and exclusive of the end time.
     * @param startTime A date and time representing the start of a the time that we're requesting.
@@ -17,8 +17,9 @@ class PriceDataManager(prices: List[PriceDataItem]) {
 
     //Narrow it down to the day of the week and then find by the times.
     //Sense the dates don't exceed a day, the start and the end are the same day
+
     prices.filter(test => startTime.dayOfWeek().get() == test.day).
-      find(_.getIntervalForDate(startTime).contains(intervalComparison))
+      find(i => !startTime.withTime(i.start).isAfter(startTime) && endTime.withTime(i.end).isAfter(endTime) )
   }
 
 
@@ -37,17 +38,6 @@ class PriceDataItem(val day: Int, val price: Long, val start: LocalTime, val end
   //Ensure the the start is earlier than the end time.
   require(start.compareTo(end) == -1, "The start time must be earlier than the end time")
 
-  /**
-    * This produces a JodaTime interval representing the time periods for a specific date.
-    * @param dateTime The date that we're looking for.
-    * @return Returns an interval between the times on that date.
-    */
-  def getIntervalForDate(dateTime: DateTime): Interval = {
-    val startDate = dateTime.withTime(start)
-    val endDate = dateTime.withTime(end)
-
-    new Interval(startDate, endDate)
-  }
 
   //Hashcode and equals does not check for price becuase it's not considered as part of the identity per spects (you won't have overlapping prices)
   def canEqual(other: Any): Boolean = other.isInstanceOf[PriceDataItem]
