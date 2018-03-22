@@ -56,12 +56,22 @@ The result represents the price:
 
 To execute this application, navigate to the base of the project folder: (should be daypricing/) and execute the following command: 
 
-    java -jar daypricing-1.0-SNAPSHOT-allinone.jar
+    java -Dconfig.file=application.json -jar daypricing-1.0-SNAPSHOT-allinone.jar
 
-This application uses a configurationfile file, by default application.json (this file is picked up in the last example because it is in the base of the project). To modify this use the config.file system property. An example of starting this application up with a configuration file of: BadConfig.json use this command.
+This application uses a configuration file: applciation.json.
+
+An example of a different configuration file is here:
 
     java -Dconfig.file=BadConfig.json  -jar daypricing-1.0-SNAPSHOT-allinone.jar
+
+The following configuration files describe the following situations 
   
+| File  |  Situation | 
+| ----------- |------------|
+| application.json | Normal execution state | 
+| BadConfig.json | An example of where a day may not exist | 
+| BadSyntax.json | An example of where a syntax issue with the config may exist | 
+
 
 ### Whats with the allinone jar? 
 

@@ -42,33 +42,41 @@ trait ServiceRoutes {
 
 
   val route =
-    path("findPrice" / "between" / Segment / Segment) { case (fromDate, toDate) => {
-      (get & extract(_.request.headers)) { headers =>
-        complete {
-          numberOfCalls += 1
-          val startTime = System.currentTimeMillis()
+    pathPrefix("findPrice" / "between" / Segment) { fromDate => {
+      validate(Try(time.DateTime.parse(fromDate)).isSuccess, s"Error: fromDate of $fromDate isn't valid. Please use a date in the format similar to: 2015-07-01T12:00:00Z ") {
+        path(Segment) { toDate => {
+          validate(Try(time.DateTime.parse(toDate)).isSuccess, s"Error: endDate of $toDate isn't valid. Please use a date in the format similar to: 2015-07-01T12:00:00Z ") {
+            (get & extract(_.request.headers)) { headers =>
+              complete {
+                numberOfCalls += 1
+                val startTime = System.currentTimeMillis()
 
-          val mediaNegotiator = new MediaTypeNegotiator(headers)
-          val fullFrom = time.DateTime.parse(fromDate)
-          val fullEnd = time.DateTime.parse(toDate)
+                val mediaNegotiator = new MediaTypeNegotiator(headers)
+                val fullFrom = time.DateTime.parse(fromDate)
+                val fullEnd = time.DateTime.parse(toDate)
 
-          val result = dataManager.findPriceBetween(fullFrom, fullEnd)
-          val smallResponse = PriceResponse(result.map(_.price).getOrElse("unavailable").toString)
+                val result = dataManager.findPriceBetween(fullFrom, fullEnd)
+                val smallResponse = PriceResponse(result.map(_.price).getOrElse("unavailable").toString)
 
-          allTimeSpent += (System.currentTimeMillis() - startTime)
+                allTimeSpent += (System.currentTimeMillis() - startTime)
 
-          HttpResponse(entity = convertPriceResponse(smallResponse, mediaNegotiator))
+                HttpResponse(entity = convertPriceResponse(smallResponse, mediaNegotiator))
+              }
+            }
+          }
+        }
         }
       }
     }
     } ~
       path("healthcheck") {
-        (get & extract(_.request.headers)) { headers =>
-          complete {
-            val mediaNegotiator = new MediaTypeNegotiator(headers)
-            val result = HealthResponse("ok", numberOfCalls, allTimeSpent / numberOfCalls)
-            HttpResponse(entity = convertHealthResultToResponse(result, mediaNegotiator))
-          }
+        (get & extract(_.request.headers)) {
+          headers =>
+            complete {
+              val mediaNegotiator = new MediaTypeNegotiator(headers)
+              val result = HealthResponse("ok", numberOfCalls, allTimeSpent / numberOfCalls)
+              HttpResponse(entity = convertHealthResultToResponse(result, mediaNegotiator))
+            }
         }
       }
 
@@ -85,6 +93,7 @@ trait ServiceRoutes {
     var response = ""
     var contentType: ContentType.NonBinary = ContentTypes.`application/json`
     if (mediaTypeNegotiator.isAccepted(MediaTypes.`application/json`)) {
+
       import MyJsonProtocol._
 
       response = health.toJson.toString()
@@ -116,7 +125,9 @@ trait ServiceRoutes {
     var response = ""
     var contentType: ContentType.NonBinary = ContentTypes.`application/json`
     if (mediaTypeNegotiator.isAccepted(MediaTypes.`application/json`)) {
+
       import MyJsonProtocol._
+
       response = price.toJson.toString()
 
     } else {
