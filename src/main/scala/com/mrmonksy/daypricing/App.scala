@@ -8,11 +8,11 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.MediaTypeNegotiator
 import akka.stream.ActorMaterializer
-import com.mrmonksy.daypricing.config.RatesCollection
-import com.mrmonksy.daypricing.datamodifiers.PriceDataUtility
-import com.typesafe.config.ConfigFactory
+import com.mrmonksy.daypricing.App.{getClass, system}
 import org.joda.time
 import spray.json.{DefaultJsonProtocol, _}
+
+import scala.util.Try
 
 object MyJsonProtocol extends DefaultJsonProtocol {
   implicit val healthFormat = jsonFormat3(HealthResponse)
@@ -23,10 +23,17 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   * This is a quirk of akka-http. It has to be a trait to be able to isolate it's self from the server standup.
   */
 trait ServiceRoutes {
-  lazy val fixedRates = RatesCollection(ConfigFactory.defaultApplication())
-  lazy val normalizedPrices = fixedRates.rates.flatMap(PriceDataUtility.from)
+  val confAssistant = new ConfigurationAssistant(None)
+  val configValues = Try(confAssistant.grabConfigurationAndConvert())
 
-  lazy val dataManager = new PriceDataManager(normalizedPrices)
+  //Lets log everything out if there was a configuration issue, note we dont' have a logger here because it's a trait
+  configValues.failed.map(ex => {
+    System.err.println(confAssistant.makeNiceErrorMessage(ex))
+    ex.printStackTrace()
+    System.exit(1)
+  })
+
+  val dataManager = new PriceDataManager(configValues.get)
 
 
   //FIXME: Record keeping (could be better), we're going to lie aobut the number of calls to avoid a divide by zero
@@ -137,9 +144,10 @@ trait ServiceRoutes {
   */
 object App extends App with ServiceRoutes {
   implicit val system = ActorSystem("my-system")
+  val logger = Logging(system, getClass)
+
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
-  val logger = Logging(system, getClass)
 
 
   logger.info("Starting the service at http://localhost:8080")

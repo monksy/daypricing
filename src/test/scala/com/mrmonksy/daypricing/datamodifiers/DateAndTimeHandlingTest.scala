@@ -16,6 +16,13 @@ class DateAndTimeHandlingTest extends FlatSpec with Matchers {
     actual should be (expected)
   }
 
+  "DateAndTimeHandlingTest::convertToDay" should "Should handle a bad value" in {
+    val day = "montag"
+
+    an [BadDayException] should be thrownBy  DateAndTimeHandling.convertToDay(day)
+  }
+
+
   "DateAndTimeHandlingTest::convertToDay" should "Should handle monday" in {
     val day = "mon"
     val expected = 1

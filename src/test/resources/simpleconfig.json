@@ -1,0 +1,9 @@
+{
+  "rates": [
+    {
+      "days": "mon,tues",
+      "times": "0600-1800",
+      "price": 1500
+    }
+  ]
+}
