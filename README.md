@@ -46,7 +46,7 @@ The result represents the price:
       git clone https://github.com/monksy/daypricing;
       cd daypricing;
       mvn package; 
-      java -Dconfig.file=application.json -jar daypricing-1.0-SNAPSHOT-allinone.jar
+      java -Dconfig.file=application.json -jar target/daypricing-1.0-SNAPSHOT-allinone.jar
       
  The application should start up with a message as such: 
  
@@ -94,7 +94,7 @@ Invalid Configuration files will prevent the application from running. Examples 
 
 To build the docker container. Go to the base of the project directory. Issue the following command:
 
-    docker build -t testbuild .
+    docker build . -t testbuild
     
     (Subsitute testbuild for the name of the docker image you're building]
     
